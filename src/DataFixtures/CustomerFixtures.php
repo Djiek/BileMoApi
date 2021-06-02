@@ -7,9 +7,17 @@ use Doctrine\Persistence\ObjectManager;
 use App\Entity\Customer;
 use App\Entity\Product;
 use Doctrine\Bundle\FixturesBundle\Fixture;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class CustomerFixtures extends Fixture
 {
+    private $passwordEncoder;
+
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder)
+    {
+     $this->passwordEncoder = $passwordEncoder;
+    }
+
     public function load(ObjectManager $manager)
     {
         $faker = \Faker\Factory::create('fr_FR');
@@ -19,7 +27,7 @@ class CustomerFixtures extends Fixture
             $customer = new Customer();
             $customer->setLogin($faker->word())
                 ->setName($faker->word())
-                ->setPassword($faker->password())
+                ->setPassword($this->passwordEncoder->encodePassword($customer,$faker->password()))
                 ->setEmail($faker->email())
                 ->setNumberSiret($faker->siret())
                 ->setCreationDate($faker->dateTime($max = 'now', $timezone = null));
