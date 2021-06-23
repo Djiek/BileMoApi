@@ -17,6 +17,7 @@ class Customer implements UserInterface
 {
     /**
      * @Groups({"customer"})
+     * @Groups({"userPost"})
      * @Groups({"user"})
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -26,6 +27,7 @@ class Customer implements UserInterface
 
     /**
      * @Groups({"customer"})
+     * @Groups({"userPost"})
      * @ORM\Column(type="string", length=255)
      */
     private $name;
@@ -54,6 +56,7 @@ class Customer implements UserInterface
 
     /**
      * @Groups({"customer"})
+     * @Groups({"customerClient"})
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="customer", orphanRemoval=true)
      */
     private $user;

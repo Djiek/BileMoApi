@@ -11,6 +11,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 
+
+
 /**
  * class UserController
  * @package App\Controller
@@ -41,7 +43,7 @@ class UserController
     public function item(User $user, SerializerInterface $serializer): JsonResponse
     {
         return new JsonResponse(
-            $serializer->serialize($user, 'json', ["groups" => "get"]),
+            $serializer->serialize($user, 'json', ["groups" => "user"]),
             JsonResponse::HTTP_OK,
             [],
             true

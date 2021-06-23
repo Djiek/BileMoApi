@@ -13,7 +13,9 @@ class User
 {
     /**
      * @Groups({"customer"})
+     * @Groups({"customerClient"})
      * @Groups({"user"})
+     * @Groups({"userPost"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
@@ -22,19 +24,25 @@ class User
 
     /**
      * @Groups({"user"})
+     * @Groups({"userPost"})
+     * @Groups({"customerClient"})
      * @ORM\Column(type="string", length=255)
      */
     private $name;
 
     /**
      * @Groups({"user"})
+     * @Groups({"customerClient"})
      * @ORM\Column(type="string", length=255)
      */
     private $firstName;
 
     /**
      * @Groups({"user"})
+     * @Groups({"userPost"})
+     * @Groups({"customerClient"})
      * @ORM\Column(type="string", length=255)
+     * @Groups({"customerlist"})
      */
     private $mail;
 
@@ -51,8 +59,9 @@ class User
     private $dateOfBirth;
 
     /**
+     * @Groups({"userPost"})
      * @Groups({"user"})
-     * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="user")
+     * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="user" )
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $customer;
