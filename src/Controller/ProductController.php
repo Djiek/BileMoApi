@@ -8,12 +8,9 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
-//use Symfony\Component\Routing\Generator\UrlGenerator;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
-
-//use Symfony\Component\Routing\RequestContextAwareInterface;
 
 /**
  * class ProductController
@@ -29,7 +26,7 @@ class ProductController
     public function listOfProducts(ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
     {
         return new JsonResponse(
-            $serializer->serialize($productRepository->findAll(), 'json', ["groups" => "product"]),
+            $serializer->serialize($productRepository->findAll(), 'json', ["groups" => "productList"]),
             JsonResponse::HTTP_OK,
             [],
             true

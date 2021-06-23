@@ -9,6 +9,10 @@ security:
                 property: email
 
     firewalls:
+    firewalls:
+        api_doc:
+            pattern: ^/api/doc
+            security: false
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
@@ -32,4 +36,4 @@ security:
     # Note: Only the *first* access control that matches will be used
     access_control:
         - { path: ^/api/login, roles: IS_AUTHENTICATED_ANONYMOUSLY }
-        - { path: ^/api,       roles: IS_AUTHENTICATED_FULLY }
+        - { path: ^/api,       roles: ROLE_USER }

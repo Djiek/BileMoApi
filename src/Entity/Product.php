@@ -13,6 +13,7 @@ use Symfony\Component\Serializer\Annotation\Groups;
 class Product
 {
     /**
+     * @Groups({"productList"})
      * @Groups({"product"})
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -21,6 +22,7 @@ class Product
     private $id;
 
     /**
+     * @Groups({"productList"})
      * @Groups({"product"})
      * @ORM\Column(type="string", length=255)
      */
