@@ -15,6 +15,7 @@ class User
      * @Groups({"customer"})
      * @Groups({"customerClient"})
      * @Groups({"user"})
+     * @Groups({"userList"})
      * @Groups({"userPost"})
      * @ORM\Id
      * @ORM\GeneratedValue
@@ -23,6 +24,7 @@ class User
     private $id;
 
     /**
+     * @Groups({"userList"})
      * @Groups({"user"})
      * @Groups({"userPost"})
      * @Groups({"customerClient"})
@@ -31,6 +33,7 @@ class User
     private $name;
 
     /**
+     * @Groups({"userList"})
      * @Groups({"user"})
      * @Groups({"customerClient"})
      * @ORM\Column(type="string", length=255)
@@ -38,6 +41,7 @@ class User
     private $firstName;
 
     /**
+     * @Groups({"userList"})
      * @Groups({"user"})
      * @Groups({"userPost"})
      * @Groups({"customerClient"})
@@ -47,7 +51,7 @@ class User
     private $mail;
 
     /**
-     * @Groups({"get"})
+     * @Groups({"user"})
      * @ORM\Column(type="string", length=255)
      */
     private $adress;
@@ -59,6 +63,7 @@ class User
     private $dateOfBirth;
 
     /**
+     * @Groups({"userList"})
      * @Groups({"userPost"})
      * @Groups({"user"})
      * @ORM\ManyToOne(targetEntity=Customer::class, inversedBy="user" )

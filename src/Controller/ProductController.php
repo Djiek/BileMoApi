@@ -11,6 +11,9 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
+use OpenApi\Annotations as OA;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use Nelmio\ApiDocBundle\Annotation\Security;
 
 /**
  * class ProductController
@@ -20,6 +23,7 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 class ProductController
 {
     /**
+     * @OA\Response(response=200, description="A list of products",@Model(type=Product::class, groups={"productList"}))
      * @Route(name="api_products_list_get", methods={"GET"})
      * @return JsonResponse
      */
@@ -34,6 +38,7 @@ class ProductController
     }
 
     /**
+     * @OA\Response(response=200, description="Get one product with his id",@Model(type=Product::class, groups={"product"}))
      * @Route("/{id}", name="api_product_item_get", methods={"GET"})
      * @param  Product $product
      * @param SerializerInterface $serializer
@@ -50,6 +55,43 @@ class ProductController
     }
 
     /**
+     * @OA\Response(response=201, description="Create a product",@Model(type=Product::class, groups={"product"}))
+     *     @OA\Parameter(
+     *         description="name of the new product",
+     *         in="path",
+     *         name="name",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Description of the new product",
+     *         in="path",
+     *         name="description",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Price of the new product",
+     *         in="path",
+     *         name="price",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Image of the new product",
+     *         in="path",
+     *         name="image",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
      * @Route(name="api_products_post", methods={"POST"})
      * @param Request $request
      * @param SerializerInterface $serializer
@@ -78,6 +120,52 @@ class ProductController
     }
 
     /**
+     * @OA\Response(response=204, description="Update a product",@Model(type=Product::class, groups={"product"}))
+     *         @OA\Parameter(
+     *         description="Name of the product",
+     *         in="path",
+     *         name="name",
+     *         required=false,
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Description of the product",
+     *         in="path",
+     *         name="description",
+     *         required=false,
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Price of the product",
+     *         in="path",
+     *         name="price",
+     *         required=false,
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Image of the product",
+     *         in="path",
+     *         name="image",
+     *         required=false,
+     *         @OA\Schema(
+     *           type="string",
+     *         )
+     *     ),
+     *     @OA\Parameter(
+     *         description="Id of the product",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
      * @Route("/{id}", name="api_products_item_put", methods={"PUT"})
      * @param Request $request
      * @param Product $product
@@ -106,6 +194,16 @@ class ProductController
     }
 
     /**
+     * @OA\Response(response=204, description="Delete a product",@Model(type=Product::class))
+     *     @OA\Parameter(
+     *         description="Id of the product",
+     *         in="path",
+     *         name="id",
+     *         required=true,
+     *         @OA\Schema(
+     *           type="integer",
+     *         )
+     *     ),
      * @Route("/{id}", name="api_products_item_delete", methods={"DELETE"})
      * @param Product $product
      * @param EntityManagerInterface $entityManager
