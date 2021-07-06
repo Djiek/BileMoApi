@@ -53,6 +53,17 @@ class Product
     private $image;
 
     /**
+     * @Groups({"productList"})
+     * @Groups({"product"})
+     */
+    private $link;
+
+    public function getLink()
+    {
+        return "/api/products/".$this->id;
+    }
+
+    /**
      * Product constructor
      */
     public function __construct()

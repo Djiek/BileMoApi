@@ -5,6 +5,8 @@ namespace App\Entity;
 use App\Repository\UserRepository;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use JMS\Serializer\Annotation as Serializer;
+use Hateoas\Configuration\Annotation as Hateoas;
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -70,6 +72,21 @@ class User
      * @ORM\JoinColumn(onDelete="CASCADE")
      */
     private $customer;
+
+
+    /**
+     * @Groups({"customerClient"})
+     * @Groups({"userList"})
+     * @Groups({"user"})
+     * @Groups({"userPost"})
+     */
+    private $link;
+
+    public function getLink()
+    {
+        return "/api/users/".$this->id;
+    }
+
 
     public function getId(): ?int
     {

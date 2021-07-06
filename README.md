@@ -1,2 +1,32 @@
-# BileMoApi
-Api for BileMo
+# BileMo API
+BileMo is a company offering a variety of premium mobile phones.
+***
+* mettre badge code climate ici
+* 
+***
+## Technologies
+***
+A list of technologies used within the project:
+* [Symfony]: Version 5.2
+* [PHP]: Version 7.3.12
+* [Doctrine]
+* [git]  
+* [mySql] 
+* [composer]
+***
+
+## Installation
+***
+BileMo API requires php 7.3.12 to run.
+To install the project :
+
+* To download the project, please clone the github project with the repository link :
+```$ git clone https://github.com/Djiek/BileMoApi```
+* Update your BDD credentials in BileMo .env
+```
+$ composer install
+$ php bin/console doctrine:database:create 
+$ php bin/console doctrine:migrations:migrate
+$ php bin/console doctrine:fixtures:load  
+$ php bin/console server:run
+```
