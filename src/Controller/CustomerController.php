@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Repository\CustomerRepository;
+use App\Repository\UserRepository;
 use App\Entity\Customer;
 use App\Entity\User;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -15,6 +16,7 @@ use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * class CustomerController
@@ -30,8 +32,13 @@ class CustomerController
      */
     public function listOfCustomers(CustomerRepository $customerRepository, SerializerInterface $serializer): JsonResponse
     {
+        $cache = new FilesystemAdapter();
+        // $cache->delete('listCustomer');
+        $customer = $cache->get('listCustomer', function(ItemInterface $item) use ($customerRepository) {
+            return $customerRepository->findAll();
+        });
           return new JsonResponse(
-            $serializer->serialize($customerRepository->findAll(),'json',["groups"=>"customer"]),
+            $serializer->serialize($customer,'json',["groups"=>"customer"]),
             JsonResponse::HTTP_OK,
             [],
             true
@@ -54,14 +61,19 @@ class CustomerController
      * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    public function listOfClientForOneCustomers(Customer $customer, SerializerInterface $serializer): JsonResponse
-    {
-        return new JsonResponse(
-            $serializer->serialize($customer->getUser() ,'json',["groups"=>"customerClient"]),
-            JsonResponse::HTTP_OK,
-            [],
-            true
-        );
+    public function listOfClientForOneCustomers(Customer $customer,UserRepository $userRepository, SerializerInterface $serializer): JsonResponse
+    {   
+        $cache = new FilesystemAdapter();
+        $user = $cache->get('customerClient_'.$customer->getId(), function(ItemInterface $item) use ($customer,$userRepository) {
+            return $userRepository->findBy(["customer"=> $customer]);
+        });
+         return new JsonResponse(
+             $serializer->serialize($user,'json',["groups"=>"customerClient"]), //$customer->getUser()  //$user
+             JsonResponse::HTTP_OK,
+             [],
+             true
+         );
+     
     }
 
     
@@ -141,12 +153,13 @@ class CustomerController
         $customer->addUser($user);
         $entityManager->persist($user);
         $entityManager->flush();
-
+        //$cache->delete('customerClient_'.$customer->getId());
         return new JsonResponse(
             $serializer->serialize($user, 'json', ["groups" => "userPost"]),
             JsonResponse::HTTP_CREATED,
             ["Location" => $urlGenerator->generate("api_product_item_get", ["id" => $user->getId()])],
             true
         );
+        
     }
 }
