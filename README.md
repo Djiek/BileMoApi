@@ -1,8 +1,8 @@
 # BileMo API
 BileMo is a company offering a variety of premium mobile phones.
 ***
-* mettre badge code climate ici
-* 
+* [![Maintainability](https://api.codeclimate.com/v1/badges/646da8779fa04f5474b2/maintainability)]
+* (https://codeclimate.com/github/Djiek/BileMoApi/maintainability)
 ***
 ## Technologies
 ***

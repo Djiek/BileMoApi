@@ -1,4 +1,6 @@
 nelmio_api_doc:
+    areas:
+        path_patterns: [ ^/api ]
     documentation:
         info:
             title: BileMo API
@@ -12,4 +14,4 @@ nelmio_api_doc:
                     bearerFormat: JWT
         security:
             - Bearer: []
-            
+       

@@ -7,8 +7,6 @@ security:
             entity : 
                 class : App\Entity\Customer
                 property: email
-
-    firewalls:
     firewalls:
         api_doc:
             pattern: ^/api/doc

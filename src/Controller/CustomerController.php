@@ -22,6 +22,7 @@ use Symfony\Contracts\Cache\ItemInterface;
  * class CustomerController
  * @package App\Controller
  * @Route("/customers")
+ * @Security(name="Bearer")
  */
 class CustomerController
 {
@@ -33,10 +34,10 @@ class CustomerController
     public function listOfCustomers(CustomerRepository $customerRepository, SerializerInterface $serializer): JsonResponse
     {
         $cache = new FilesystemAdapter();
-        // $cache->delete('listCustomer');
         $customer = $cache->get('listCustomer', function(ItemInterface $item) use ($customerRepository) {
             return $customerRepository->findAll();
         });
+        $cache->delete('listCustomer');
           return new JsonResponse(
             $serializer->serialize($customer,'json',["groups"=>"customer"]),
             JsonResponse::HTTP_OK,
@@ -68,12 +69,11 @@ class CustomerController
             return $userRepository->findBy(["customer"=> $customer]);
         });
          return new JsonResponse(
-             $serializer->serialize($user,'json',["groups"=>"customerClient"]), //$customer->getUser()  //$user
+             $serializer->serialize($user,'json',["groups"=>"customerClient"]),
              JsonResponse::HTTP_OK,
              [],
              true
          );
-     
     }
 
     
@@ -150,16 +150,16 @@ class CustomerController
 
         /** @var User $user*/ 
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
+        $cache = new FilesystemAdapter();
         $customer->addUser($user);
         $entityManager->persist($user);
         $entityManager->flush();
-        //$cache->delete('customerClient_'.$customer->getId());
+        $cache->delete('customerClient_'.$customer->getId());
         return new JsonResponse(
             $serializer->serialize($user, 'json', ["groups" => "userPost"]),
             JsonResponse::HTTP_CREATED,
             ["Location" => $urlGenerator->generate("api_product_item_get", ["id" => $user->getId()])],
             true
-        );
-        
+        );   
     }
 }
