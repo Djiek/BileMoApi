@@ -13,11 +13,14 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * class UserController
  * @package App\Controller
  * @Route("/users")
+ * @Security(name="Bearer")
  */
 class UserController
 {
@@ -28,8 +31,12 @@ class UserController
      */
     public function listOfUsers(UserRepository $userRepository, SerializerInterface $serializer): JsonResponse
     {
+        $cache = new FilesystemAdapter();
+        $user = $cache->get('listUser', function(ItemInterface $item) use ($userRepository) {
+            return $userRepository->findAll();
+        });
         return new JsonResponse(
-            $serializer->serialize($userRepository->findAll(), 'json', ["groups" => "userList"]),
+            $serializer->serialize($user, 'json', ["groups" => "userList"]),
             JsonResponse::HTTP_OK,
             [],
             true
@@ -43,18 +50,23 @@ class UserController
      * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    public function item(User $user, SerializerInterface $serializer): JsonResponse
+    public function item($id, UserRepository $userRepository, SerializerInterface $serializer): JsonResponse
     {
+        $cache = new FilesystemAdapter();
+        $oneUser = $cache->get('oneUser_'.$id, function(ItemInterface $item) use ($id,$userRepository) {
+            return $userRepository->find($id);
+        });
         return new JsonResponse(
-            $serializer->serialize($user, 'json', ["groups" => "user"]),
+            $serializer->serialize($oneUser, 'json', ["groups" => "user"]),
             JsonResponse::HTTP_OK,
             [],
             true
-        );
+        );  
+       
     }
 
     /**
-     * @OA\Response(response=204, description="Update a user",@Model(type=User::class, groups={"user"}))
+     * @OA\Response(response=200, description="Update a user",@Model(type=User::class, groups={"user"}))
      *     @OA\Parameter(
      *         description="name of the new user",
      *         in="path",
@@ -129,10 +141,14 @@ class UserController
         );
 
         $entityManager->flush();
-
+        $cache = new FilesystemAdapter();
+        $cache->delete('listUser');
+        $cache->delete('oneUser_'.$user->getId());
         return new JsonResponse(
-            null,
-            JsonResponse::HTTP_NO_CONTENT
+            $serializer->serialize($user, 'json', ["groups" => "user"]),
+            JsonResponse::HTTP_OK,
+            [],
+            true
         );
     }
 
@@ -159,6 +175,9 @@ class UserController
 
         $entityManager->remove($user);
         $entityManager->flush();
+        $cache = new FilesystemAdapter();
+        $cache->delete('listUser');
+        $cache->delete('oneUser_'.$user->getId());
 
         return new JsonResponse(
             null,

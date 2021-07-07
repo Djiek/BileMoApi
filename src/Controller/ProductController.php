@@ -14,11 +14,14 @@ use Symfony\Component\Serializer\Normalizer\AbstractNormalizer;
 use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
+use Symfony\Component\Cache\Adapter\FilesystemAdapter;
+use Symfony\Contracts\Cache\ItemInterface;
 
 /**
  * class ProductController
  * @package App\Controller
  * @Route("/products")
+ * @Security(name="Bearer")
  */
 class ProductController
 {
@@ -29,8 +32,12 @@ class ProductController
      */
     public function listOfProducts(ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
     {
+        $cache = new FilesystemAdapter();
+        $product = $cache->get('listOfProduct', function(ItemInterface $item) use ($productRepository) {
+        return $productRepository->findAll();
+        });
         return new JsonResponse(
-            $serializer->serialize($productRepository->findAll(), 'json', ["groups" => "productList"]),
+            $serializer->serialize($product, 'json', ["groups" => "productList"]),
             JsonResponse::HTTP_OK,
             [],
             true
@@ -44,10 +51,14 @@ class ProductController
      * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    public function item(Product $product, SerializerInterface $serializer): JsonResponse
+    public function item($id, ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
     {
+        $cache = new FilesystemAdapter();
+        $oneProduct = $cache->get('oneProduct_'.$id, function(ItemInterface $item) use ($id,$productRepository) {
+            return $productRepository->find($id);
+        });
         return new JsonResponse(
-            $serializer->serialize($product, 'json', ["groups" => "product"]),
+            $serializer->serialize($oneProduct, 'json', ["groups" => "product"]),
             JsonResponse::HTTP_OK,
             [],
             true
@@ -107,9 +118,11 @@ class ProductController
 
         /** @var Product $product*/
         $product = $serializer->deserialize($request->getContent(), Product::class, 'json');
-
+        $cache = new FilesystemAdapter();
         $entityManager->persist($product);
         $entityManager->flush();
+        $cache->delete('listOfProduct');
+        $cache->delete('oneProduct_'.$product->getId());
 
         return new JsonResponse(
             $serializer->serialize($product, 'json', ["groups" => "product"]),
@@ -186,10 +199,14 @@ class ProductController
         );
 
         $entityManager->flush();
-
-        return new JsonResponse(
-            null,
-            JsonResponse::HTTP_NO_CONTENT
+        $cache = new FilesystemAdapter();
+        $cache->delete('listOfProduct');
+        $cache->delete('oneProduct_'.$product->getId());
+         return new JsonResponse(
+            $serializer->serialize($product, 'json', ["groups" => "product"]),
+            JsonResponse::HTTP_OK,
+            [],
+            true
         );
     }
 
@@ -213,10 +230,12 @@ class ProductController
         Product $product,
         EntityManagerInterface $entityManager
     ): JsonResponse {
-
+        
         $entityManager->remove($product);
         $entityManager->flush();
-
+        $cache = new FilesystemAdapter();
+        $cache->delete('listOfProduct');
+        $cache->delete('oneProduct_'.$product->getId());
         return new JsonResponse(
             null,
             JsonResponse::HTTP_NO_CONTENT

@@ -6,6 +6,8 @@ use App\Repository\ProductRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use Nelmio\ApiDocBundle\Annotation\Model;
+use OpenApi\Annotations as OA;
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -53,6 +55,7 @@ class Product
     private $image;
 
     /**
+     * @OA\Property(type="string")
      * @Groups({"productList"})
      * @Groups({"product"})
      */
