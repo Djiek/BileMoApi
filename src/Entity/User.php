@@ -87,7 +87,7 @@ class User
 
     public function getLink()
     {
-        return "/api/users/".$this->id;
+        return "/api/users/" . $this->id;
     }
 
 

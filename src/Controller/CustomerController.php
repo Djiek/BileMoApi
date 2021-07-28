@@ -26,28 +26,31 @@ use Symfony\Contracts\Cache\ItemInterface;
  */
 class CustomerController
 {
-    /**    
-     * @OA\Response(response=200, description="A list of customers",@Model(type=Customer::class, groups={"customer"}))
-     * @Route(name="api_customers_list_get", methods={"GET"})
-     * @return JsonResponse
-     */
-    public function listOfCustomers(CustomerRepository $customerRepository, SerializerInterface $serializer): JsonResponse
-    {
+    /**
+    * @OA\Response(response=200, description="A list of customers",@Model(type=Customer::class, groups={"customer"}))
+    * @Route(name="api_customers_list_get", methods={"GET"})
+    * @return JsonResponse
+    */
+    public function listOfCustomers(
+        CustomerRepository $customerRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
         $cache = new FilesystemAdapter();
-        $customer = $cache->get('listCustomer', function(ItemInterface $item) use ($customerRepository) {
+        $customer = $cache->get('listCustomer', function (ItemInterface $item) use ($customerRepository) {
             return $customerRepository->findAll();
         });
         $cache->delete('listCustomer');
           return new JsonResponse(
-            $serializer->serialize($customer,'json',["groups"=>"customer"]),
-            JsonResponse::HTTP_OK,
-            [],
-            true
-        );   
-    } 
+              $serializer->serialize($customer, 'json', ["groups" => "customer"]),
+              JsonResponse::HTTP_OK,
+              [],
+              true
+          );
+    }
 
   /**
-     * @OA\Response(response=200, description="A list of users for one customer",@Model(type=User::class, groups={"customerClient"}))
+     * @OA\Response(response=200, description="A list of users for one customer",
+     * @Model(type=User::class, groups={"customerClient"}))
      *     @OA\Parameter(
      *         description="Id of the customer",
      *         in="path",
@@ -62,23 +65,29 @@ class CustomerController
      * @param SerializerInterface $serializer
      * @return JsonResponse
      */
-    public function listOfClientForOneCustomers(Customer $customer,UserRepository $userRepository, SerializerInterface $serializer): JsonResponse
-    {   
+    public function listOfClientForOneCustomers(
+        Customer $customer,
+        UserRepository $userRepository,
+        SerializerInterface $serializer
+    ): JsonResponse {
         $cache = new FilesystemAdapter();
-        $user = $cache->get('customerClient_'.$customer->getId(), function(ItemInterface $item) use ($customer,$userRepository) {
-            return $userRepository->findBy(["customer"=> $customer]);
-        });
+        $user = $cache->get(
+            'customerClient_' . $customer->getId(),
+            function (ItemInterface $item) use ($customer, $userRepository) {
+                return $userRepository->findBy(["customer" => $customer]);
+            }
+        );
          return new JsonResponse(
-             $serializer->serialize($user,'json',["groups"=>"customerClient"]),
+             $serializer->serialize($user, 'json', ["groups" => "customerClient"]),
              JsonResponse::HTTP_OK,
              [],
              true
          );
     }
 
-    
     /**
-     * @OA\Response(response=201, description="Create a user for one customer",@Model(type=User::class, groups={"userPost"}))
+     * @OA\Response(response=201, description="Create a user for one customer",
+     * @Model(type=User::class, groups={"userPost"}))
      *     @OA\Parameter(
      *         description="name of the new user",
      *         in="path",
@@ -148,18 +157,18 @@ class CustomerController
         EntityManagerInterface $entityManager
     ): JsonResponse {
 
-        /** @var User $user*/ 
+        /** @var User $user*/
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
         $cache = new FilesystemAdapter();
         $customer->addUser($user);
         $entityManager->persist($user);
         $entityManager->flush();
-        $cache->delete('customerClient_'.$customer->getId());
+        $cache->delete('customerClient_' . $customer->getId());
         return new JsonResponse(
             $serializer->serialize($user, 'json', ["groups" => "userPost"]),
             JsonResponse::HTTP_CREATED,
             ["Location" => $urlGenerator->generate("api_product_item_get", ["id" => $user->getId()])],
             true
-        );   
+        );
     }
 }

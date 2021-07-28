@@ -11,6 +11,7 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Component\Serializer\SerializerInterface;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 use Doctrine\ORM\EntityManagerInterface;
 use OpenApi\Annotations as OA;
 use Nelmio\ApiDocBundle\Annotation\Model;
@@ -22,7 +23,6 @@ use Symfony\Contracts\Cache\ItemInterface;
  * class SecurityController
  * @package App\Controller
  * @Route("/login_check")
- * @Security(name="Bearer")
  */
 class SecurityController
 {
@@ -31,7 +31,7 @@ class SecurityController
      *      @OA\Parameter(
      *         description="mail customer",
      *         in="path",
-     *         name="email",
+     *         name="username",
      *         required=true,
      *         @OA\Schema(
      *           type="string",
@@ -46,8 +46,9 @@ class SecurityController
      *           type="string",
      *         )
      *     ),
-     * @Route(name="login_check", methods={"GET"})
+     * @Route(name="login_check", methods={"POST"})
      */
     public function index()
-    {} 
+    {
+    }
 }
