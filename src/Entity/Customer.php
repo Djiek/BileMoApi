@@ -55,7 +55,6 @@ class Customer implements UserInterface
     private $numberSiret;
 
     /**
-     * @Groups({"customer"})
      * @Groups({"customerClient"})
      * @ORM\OneToMany(targetEntity=User::class, mappedBy="customer", orphanRemoval=true)
      */
@@ -170,7 +169,7 @@ class Customer implements UserInterface
 
     /**
      * Get the value of numberSiret
-     */ 
+     */
     public function getNumberSiret()
     {
         return $this->numberSiret;
@@ -178,9 +177,8 @@ class Customer implements UserInterface
 
     /**
      * Set the value of numberSiret
-     *
-     * @return  self
-     */ 
+     * @return self
+     */
     public function setNumberSiret($numberSiret)
     {
         $this->numberSiret = $numberSiret;
@@ -202,7 +200,8 @@ class Customer implements UserInterface
      *
      * @return string[] The user roles
      */
-    public function getRoles(){
+    public function getRoles()
+    {
         return ['ROLE_USER'];
     }
 
@@ -213,14 +212,17 @@ class Customer implements UserInterface
      *
      * @return string|null The salt
      */
-    public function getSalt(){}
+    public function getSalt()
+    {
+    }
 
     /**
      * Returns the username used to authenticate the user.
      *
      * @return string The username
      */
-    public function getUsername(){
+    public function getUsername()
+    {
         return $this->email;
     }
 
@@ -230,5 +232,7 @@ class Customer implements UserInterface
      * This is important if, at any given point, sensitive information like
      * the plain-text password is stored on this object.
      */
-    public function eraseCredentials(){}
+    public function eraseCredentials()
+    {
+    }
 }

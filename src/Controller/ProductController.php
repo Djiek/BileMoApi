@@ -33,8 +33,8 @@ class ProductController
     public function listOfProducts(ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
     {
         $cache = new FilesystemAdapter();
-        $product = $cache->get('listOfProduct', function(ItemInterface $item) use ($productRepository) {
-        return $productRepository->findAll();
+        $product = $cache->get('listOfProduct', function (ItemInterface $item) use ($productRepository) {
+            return $productRepository->findAll();
         });
         return new JsonResponse(
             $serializer->serialize($product, 'json', ["groups" => "productList"]),
@@ -45,7 +45,8 @@ class ProductController
     }
 
     /**
-     * @OA\Response(response=200, description="Get one product with his id",@Model(type=Product::class, groups={"product"}))
+     * @OA\Response(response=200, description="Get one product with his id",
+     * @Model(type=Product::class, groups={"product"}))
      * @Route("/{id}", name="api_product_item_get", methods={"GET"})
      * @param  Product $product
      * @param SerializerInterface $serializer
@@ -54,7 +55,7 @@ class ProductController
     public function item($id, ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
     {
         $cache = new FilesystemAdapter();
-        $oneProduct = $cache->get('oneProduct_'.$id, function(ItemInterface $item) use ($id,$productRepository) {
+        $oneProduct = $cache->get('oneProduct_' . $id, function (ItemInterface $item) use ($id, $productRepository) {
             return $productRepository->find($id);
         });
         return new JsonResponse(
@@ -122,7 +123,7 @@ class ProductController
         $entityManager->persist($product);
         $entityManager->flush();
         $cache->delete('listOfProduct');
-        $cache->delete('oneProduct_'.$product->getId());
+        $cache->delete('oneProduct_' . $product->getId());
 
         return new JsonResponse(
             $serializer->serialize($product, 'json', ["groups" => "product"]),
@@ -201,13 +202,13 @@ class ProductController
         $entityManager->flush();
         $cache = new FilesystemAdapter();
         $cache->delete('listOfProduct');
-        $cache->delete('oneProduct_'.$product->getId());
+        $cache->delete('oneProduct_' . $product->getId());
          return new JsonResponse(
-            $serializer->serialize($product, 'json', ["groups" => "product"]),
-            JsonResponse::HTTP_OK,
-            [],
-            true
-        );
+             $serializer->serialize($product, 'json', ["groups" => "product"]),
+             JsonResponse::HTTP_OK,
+             [],
+             true
+         );
     }
 
     /**
@@ -230,12 +231,11 @@ class ProductController
         Product $product,
         EntityManagerInterface $entityManager
     ): JsonResponse {
-        
         $entityManager->remove($product);
         $entityManager->flush();
         $cache = new FilesystemAdapter();
         $cache->delete('listOfProduct');
-        $cache->delete('oneProduct_'.$product->getId());
+        $cache->delete('oneProduct_' . $product->getId());
         return new JsonResponse(
             null,
             JsonResponse::HTTP_NO_CONTENT

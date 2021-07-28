@@ -15,7 +15,7 @@ class CustomerFixtures extends Fixture
 
     public function __construct(UserPasswordEncoderInterface $passwordEncoder)
     {
-     $this->passwordEncoder = $passwordEncoder;
+        $this->passwordEncoder = $passwordEncoder;
     }
 
     public function load(ObjectManager $manager)
@@ -27,7 +27,7 @@ class CustomerFixtures extends Fixture
             $customer = new Customer();
             $customer->setLogin($faker->word())
                 ->setName($faker->word())
-                ->setPassword($this->passwordEncoder->encodePassword($customer,$faker->password()))
+                ->setPassword($this->passwordEncoder->encodePassword($customer, $faker->password()))
                 ->setEmail($faker->email())
                 ->setNumberSiret($faker->siret())
                 ->setCreationDate($faker->dateTime($max = 'now', $timezone = null));

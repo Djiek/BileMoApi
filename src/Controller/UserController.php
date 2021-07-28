@@ -32,7 +32,7 @@ class UserController
     public function listOfUsers(UserRepository $userRepository, SerializerInterface $serializer): JsonResponse
     {
         $cache = new FilesystemAdapter();
-        $user = $cache->get('listUser', function(ItemInterface $item) use ($userRepository) {
+        $user = $cache->get('listUser', function (ItemInterface $item) use ($userRepository) {
             return $userRepository->findAll();
         });
         return new JsonResponse(
@@ -53,7 +53,7 @@ class UserController
     public function item($id, UserRepository $userRepository, SerializerInterface $serializer): JsonResponse
     {
         $cache = new FilesystemAdapter();
-        $oneUser = $cache->get('oneUser_'.$id, function(ItemInterface $item) use ($id,$userRepository) {
+        $oneUser = $cache->get('oneUser_' . $id, function (ItemInterface $item) use ($id, $userRepository) {
             return $userRepository->find($id);
         });
         return new JsonResponse(
@@ -61,8 +61,7 @@ class UserController
             JsonResponse::HTTP_OK,
             [],
             true
-        );  
-       
+        );
     }
 
     /**
@@ -143,7 +142,7 @@ class UserController
         $entityManager->flush();
         $cache = new FilesystemAdapter();
         $cache->delete('listUser');
-        $cache->delete('oneUser_'.$user->getId());
+        $cache->delete('oneUser_' . $user->getId());
         return new JsonResponse(
             $serializer->serialize($user, 'json', ["groups" => "user"]),
             JsonResponse::HTTP_OK,
@@ -177,7 +176,7 @@ class UserController
         $entityManager->flush();
         $cache = new FilesystemAdapter();
         $cache->delete('listUser');
-        $cache->delete('oneUser_'.$user->getId());
+        $cache->delete('oneUser_' . $user->getId());
 
         return new JsonResponse(
             null,

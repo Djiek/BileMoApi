@@ -40,7 +40,7 @@ class Product
      * @Groups({"product"})
      * @ORM\Column(type="date")
      */
-    private  $dateCreation;
+    private $dateCreation;
 
     /**
      * @Groups({"product"})
@@ -63,7 +63,7 @@ class Product
 
     public function getLink()
     {
-        return "/api/products/".$this->id;
+        return "/api/products/" . $this->id;
     }
 
     /**
