@@ -15,6 +15,9 @@ A list of technologies used within the project:
 * [composer]
 ***
 
+## Documentation technique 
+ex : http://localhost:8000/api/doc
+
 ## Installation
 ***
 BileMo API requires php 7.3.12 to run.

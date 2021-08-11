@@ -74,6 +74,7 @@ class CustomerController
         $user = $cache->get(
             'customerClient_' . $customer->getId(),
             function (ItemInterface $item) use ($customer, $userRepository) {
+                $item->expiresAfter(30);
                 return $userRepository->findBy(["customer" => $customer]);
             }
         );
@@ -163,7 +164,6 @@ class CustomerController
         $customer->addUser($user);
         $entityManager->persist($user);
         $entityManager->flush();
-        $cache->delete('customerClient_' . $customer->getId());
         return new JsonResponse(
             $serializer->serialize($user, 'json', ["groups" => "userPost"]),
             JsonResponse::HTTP_CREATED,

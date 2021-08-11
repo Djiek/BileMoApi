@@ -178,7 +178,7 @@ class UserController
      * @param EntityManagerInterface $entityManager
      * @return JsonResponse
      */
-    public function delete(
+     public function delete(
         User $user,
         EntityManagerInterface $entityManager
     ): JsonResponse {
