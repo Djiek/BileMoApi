@@ -20,6 +20,7 @@ class Customer implements UserInterface
      * @Groups({"customer"})
      * @Groups({"userPost"})
      * @Groups({"user"})
+     * @Groups({"userList"})
      * @ORM\Id
      * @ORM\GeneratedValue
      * @ORM\Column(type="integer")
