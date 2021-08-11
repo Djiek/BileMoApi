@@ -9,6 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use DateTimeImmutable;
 use Symfony\Component\Security\Core\User\UserInterface;
+use Symfony\Component\Validator\Constraints as Assert;  
 
 /**
  * @ORM\Entity(repositoryClass=CustomerRepository::class)
@@ -44,14 +45,16 @@ class Customer implements UserInterface
     private $login;
 
     /**
+     * @Groups({"connexion"})
      * @ORM\Column(type="string", length=255)
+     * @Assert\Length(min="3",minMessage="Le mot de passe doit faire au minimum 3 caractères")
      */
     private $password;
 
     /**
-     * @Groups({"customer"})
+    * @Groups({"customer"})
     * @ORM\Column(type="string", length=255)
-     */
+    */
     private $numberSiret;
 
     /**
@@ -61,8 +64,9 @@ class Customer implements UserInterface
     private $user;
 
     /**
-     * @Groups({"customer"})
+     * @Groups({"customer","connexion"})
      * @ORM\Column(type="string", length=255)
+     * @Assert\Email()
      */
     private $email;
 
