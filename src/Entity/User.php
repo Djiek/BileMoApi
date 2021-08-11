@@ -9,6 +9,7 @@ use JMS\Serializer\Annotation as Serializer;
 use Hateoas\Configuration\Annotation as Hateoas;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Validator\Constraints as Assert;  
 
 /**
  * @ORM\Entity(repositoryClass=UserRepository::class)
@@ -37,6 +38,7 @@ class User
     private $name;
 
     /**
+     * @Assert\NotBlank
      * @Groups({"userList"})
      * @Groups({"user"})
      * @Groups({"customerClient"})
@@ -45,6 +47,7 @@ class User
     private $firstName;
 
     /**
+     * @Assert\NotBlank
      * @Groups({"userList"})
      * @Groups({"user"})
      * @Groups({"userPost"})
@@ -55,12 +58,14 @@ class User
     private $mail;
 
     /**
+     * @Assert\NotBlank
      * @Groups({"user"})
      * @ORM\Column(type="string", length=255)
      */
     private $adress;
 
     /**
+     * @Assert\NotBlank
      * @Groups({"user"})
      * @ORM\Column(type="string", length=255)
      */

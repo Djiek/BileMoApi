@@ -22,6 +22,7 @@ use Symfony\Contracts\Cache\ItemInterface;
  * @package App\Controller
  * @Route("/products")
  * @Security(name="Bearer")
+ * @OA\Tag(name="Product")
  */
 class ProductController
 {
@@ -30,11 +31,21 @@ class ProductController
      * @Route(name="api_products_list_get", methods={"GET"})
      * @return JsonResponse
      */
-    public function listOfProducts(ProductRepository $productRepository, SerializerInterface $serializer): JsonResponse
+    public function listOfProducts(ProductRepository $productRepository, SerializerInterface $serializer,Request $request): JsonResponse
     {
+        $limit = 5;
+        $page = (int)$request->query->get("page", 1);
+       
+         if ($page === null) {
+            $page = 1;
+        }
+
         $cache = new FilesystemAdapter();
-        $product = $cache->get('listOfProduct', function (ItemInterface $item) use ($productRepository) {
-            return $productRepository->findAll();
+        $cache->delete('listOfProduct');
+        $product = $cache->get('listOfProduct_' . $page, function (ItemInterface $item) use ($productRepository,$page,$limit) {   
+            $item->expiresAfter(30);
+            $products = $productRepository->pagination($page, $limit);
+            return $products;
         });
         return new JsonResponse(
             $serializer->serialize($product, 'json', ["groups" => "productList"]),
@@ -122,7 +133,6 @@ class ProductController
         $cache = new FilesystemAdapter();
         $entityManager->persist($product);
         $entityManager->flush();
-        $cache->delete('listOfProduct');
         $cache->delete('oneProduct_' . $product->getId());
 
         return new JsonResponse(
@@ -201,7 +211,6 @@ class ProductController
 
         $entityManager->flush();
         $cache = new FilesystemAdapter();
-        $cache->delete('listOfProduct');
         $cache->delete('oneProduct_' . $product->getId());
          return new JsonResponse(
              $serializer->serialize($product, 'json', ["groups" => "product"]),
@@ -234,7 +243,6 @@ class ProductController
         $entityManager->remove($product);
         $entityManager->flush();
         $cache = new FilesystemAdapter();
-        $cache->delete('listOfProduct');
         $cache->delete('oneProduct_' . $product->getId());
         return new JsonResponse(
             null,

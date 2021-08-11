@@ -6,6 +6,11 @@
 parameters:
 
 services:
+
+    pagination_factory:
+        class: App\Pagination\PaginationFactory
+        arguments: ['@router']
+
     # default configuration for services in *this* file
     _defaults:
         autowire: true      # Automatically injects dependencies in your services.

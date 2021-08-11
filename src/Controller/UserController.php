@@ -21,20 +21,32 @@ use Symfony\Contracts\Cache\ItemInterface;
  * @package App\Controller
  * @Route("/users")
  * @Security(name="Bearer")
+ * @OA\Tag(name="User")
  */
 class UserController
 {
+
     /**
      * @OA\Response(response=200, description="A list of users",@Model(type=User::class, groups={"userList"}))
      * @Route(name="api_users_list_get", methods={"GET"})
      * @return JsonResponse
      */
-    public function listOfUsers(UserRepository $userRepository, SerializerInterface $serializer): JsonResponse
+    public function listOfUsers(UserRepository $userRepository, SerializerInterface $serializer,Request $request): JsonResponse
     {
+        $limit = 5;
+        $page = (int)$request->query->get("page", 1);
+       
+         if ($page === null) {
+            $page = 1;
+        }
+
         $cache = new FilesystemAdapter();
-        $user = $cache->get('listUser', function (ItemInterface $item) use ($userRepository) {
-            return $userRepository->findAll();
+        $user = $cache->get('listUser_' . $page, function (ItemInterface $item) use ($userRepository,$page,$limit) {
+            $item->expiresAfter(30);
+            $users = $userRepository->pagination($page, $limit);
+            return $users;
         });
+
         return new JsonResponse(
             $serializer->serialize($user, 'json', ["groups" => "userList"]),
             JsonResponse::HTTP_OK,
@@ -141,7 +153,6 @@ class UserController
 
         $entityManager->flush();
         $cache = new FilesystemAdapter();
-        $cache->delete('listUser');
         $cache->delete('oneUser_' . $user->getId());
         return new JsonResponse(
             $serializer->serialize($user, 'json', ["groups" => "user"]),
@@ -175,7 +186,6 @@ class UserController
         $entityManager->remove($user);
         $entityManager->flush();
         $cache = new FilesystemAdapter();
-        $cache->delete('listUser');
         $cache->delete('oneUser_' . $user->getId());
 
         return new JsonResponse(

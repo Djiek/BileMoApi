@@ -23,6 +23,7 @@ use Symfony\Contracts\Cache\ItemInterface;
  * @package App\Controller
  * @Route("/customers")
  * @Security(name="Bearer")
+ * @OA\Tag(name="Customer")
  */
 class CustomerController
 {
@@ -39,7 +40,6 @@ class CustomerController
         $customer = $cache->get('listCustomer', function (ItemInterface $item) use ($customerRepository) {
             return $customerRepository->findAll();
         });
-        $cache->delete('listCustomer');
           return new JsonResponse(
               $serializer->serialize($customer, 'json', ["groups" => "customer"]),
               JsonResponse::HTTP_OK,

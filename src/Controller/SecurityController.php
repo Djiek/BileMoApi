@@ -23,31 +23,30 @@ use Symfony\Contracts\Cache\ItemInterface;
  * class SecurityController
  * @package App\Controller
  * @Route("/login_check")
+ * @OA\Tag(name="Security")
  */
 class SecurityController
 {
     /**
-     * @OA\Response(response=200, description="login customer")
-     *      @OA\Parameter(
-     *         description="mail customer",
-     *         in="path",
-     *         name="username",
-     *         required=true,
-     *         @OA\Schema(
-     *           type="string",
-     *         )
-     *     ),
-     *      @OA\Parameter(
-     *         description="password customer",
-     *         in="path",
-     *         name="password",
-     *         required=true,
-     *         @OA\Schema(
-     *           type="string",
-     *         )
-     *     ),
-     * @Route(name="login_check", methods={"POST"})
-     */
+      * @OA\Response(
+      *     response=200,
+      *     description="Returns a connexion token",
+      * )
+      * @OA\Response(
+      *     response=401,
+      *     description="Invalid credentials",
+      * )
+      * @OA\RequestBody(
+      *     request="connexion",
+      *     description="login id",
+      *     required=true,
+      *     @OA\MediaType(
+      *         mediaType="application/json",
+      *         @OA\Schema(ref=@Model(type=Customer::class,groups={"connexion"}))
+      *     )
+      * )
+      * @Route(name="login_check", methods={"POST"})
+      */
     public function index()
     {
     }
