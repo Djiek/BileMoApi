@@ -30,6 +30,9 @@ To install the project :
 $ composer install
 $ php bin/console doctrine:database:create 
 $ php bin/console doctrine:migrations:migrate
-$ php bin/console doctrine:fixtures:load  
+$ php bin/console doctrine:fixtures:load 
+$ openssl genrsa -out config/jwt/private.pem 4096",
+$ openssl rsa -pubout -in config/jwt/private.pem -out config/jwt/public.pem",
 $ php bin/console server:run
 ```
+* Password for authentification for generate token : "123" (String)
