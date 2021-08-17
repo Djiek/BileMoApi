@@ -37,4 +37,4 @@ $ php bin/console server:run
 ```
 * Password for authentification for generate token : "123" (String)
 * username for authentification : email in customer table
-* exemple : {"username": "leblanc.leon@leblanc.fr", "password": "123"} 
+* exemple : {"username": "mail@gmail.fr", "password": "123"} 
