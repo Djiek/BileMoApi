@@ -8,6 +8,7 @@ use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
 use Nelmio\ApiDocBundle\Annotation\Model;
 use OpenApi\Annotations as OA;
+use Symfony\Component\Validator\Constraints as Assert; 
 
 /**
  * @ORM\Entity(repositoryClass=ProductRepository::class)
@@ -24,6 +25,7 @@ class Product
     private $id;
 
     /**
+     * @Assert\NotBlank
      * @Groups({"productList"})
      * @Groups({"product"})
      * @ORM\Column(type="string", length=255)
@@ -31,6 +33,7 @@ class Product
     private $name;
 
     /**
+     * @Assert\NotBlank
      * @Groups({"product"})
      * @ORM\Column(type="string", length=255)
      */
@@ -43,12 +46,14 @@ class Product
     private $dateCreation;
 
     /**
+     * @Assert\NotBlank
      * @Groups({"product"})
      * @ORM\Column(type="integer")
      */
     private $price;
 
     /**
+     * @Assert\NotBlank
      * @Groups({"product"})
      * @ORM\Column(type="string", length=255)
      */

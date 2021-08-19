@@ -17,6 +17,8 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * class CustomerController
@@ -155,11 +157,17 @@ class CustomerController
         Request $request,
         SerializerInterface $serializer,
         UrlGeneratorInterface $urlGenerator,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ValidatorInterface $validator
     ): JsonResponse {
 
         /** @var User $user*/
         $user = $serializer->deserialize($request->getContent(), User::class, 'json');
+         $errors = $validator->validate($user);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors,'json'),JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
         $cache = new FilesystemAdapter();
         $customer->addUser($user);
         $entityManager->persist($user);

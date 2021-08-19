@@ -29,6 +29,7 @@ class User
     private $id;
 
     /**
+     * @Assert\NotBlank
      * @Groups({"userList"})
      * @Groups({"user"})
      * @Groups({"userPost"})

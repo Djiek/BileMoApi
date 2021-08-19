@@ -16,6 +16,8 @@ use Nelmio\ApiDocBundle\Annotation\Model;
 use Nelmio\ApiDocBundle\Annotation\Security;
 use Symfony\Component\Cache\Adapter\FilesystemAdapter;
 use Symfony\Contracts\Cache\ItemInterface;
+use Symfony\Component\Validator\Validator\ValidatorInterface;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * class ProductController
@@ -121,16 +123,23 @@ class ProductController
      * @param UrlGenerator $urlGenerator
      * @return JsonResponse
      */
-    public function post(
+  public function post(
         Request $request,
         SerializerInterface $serializer,
         UrlGeneratorInterface $urlGenerator,
-        EntityManagerInterface $entityManager
+        EntityManagerInterface $entityManager,
+        ValidatorInterface $validator
     ): JsonResponse {
-
         /** @var Product $product*/
         $product = $serializer->deserialize($request->getContent(), Product::class, 'json');
         $cache = new FilesystemAdapter();
+
+        $errors = $validator->validate($product);
+
+        if ($errors->count() > 0) {
+            return new JsonResponse($serializer->serialize($errors,'json'),JsonResponse::HTTP_BAD_REQUEST, [], true);
+        }
+
         $entityManager->persist($product);
         $entityManager->flush();
         $cache->delete('oneProduct_' . $product->getId());
@@ -142,6 +151,7 @@ class ProductController
             true
         );
     }
+
 
     /**
      * @OA\Response(response=204, description="Update a product",@Model(type=Product::class, groups={"product"}))
